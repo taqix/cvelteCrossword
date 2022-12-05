@@ -1,21 +1,19 @@
-# svelte-vite-tailwindcss3-template
-
-This is a fork of Svelte's project template to enable usage of Tailwindcss. Refer to https://github.com/sveltejs/template for more info.
-
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit lukem121/svelte-vite-tailwind-template svelte-app
-cd svelte-app
+# svelte-crossword
+###### Robisz tak pobierasz se gita stąd jak nie masz [git](https://git-scm.com/download/win)
+## Napisz jak to zrobisz, bo będę musiał dać Ci dostęp do zmieniania plików i trzeba zrobić krótki setup gita
+Tym sobie pobierasz projekt cały
 ```
-
-_Note that you will need to have [Node.js](https://nodejs.org) installed._
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
-npm install
+git pull https://github.com/taqix/svelte-crossword
+```
+Zawsze gdy będziemy wymieniać się rzeczami no to będziesz musiał tą komendę użyć, tego używasz jak chcesz dodać coś do swojego brancha
+```
+git add --all
+git commit -m "tu dajesz nazwe commitu"
+git push
+```
+Za pierwszym razem ta ostatnia komenda nie zadziała i musisz użyć tego całego
+```
+git remote add origin https://github.com/taqix/svelte-crossword.git
+git branch -M main
+git push -u origin main
 ```
