@@ -1,10 +1,20 @@
 <script>
-import InputField from "./inputField.svelte";
-export let xSize;
-</script>
-{#each Array(xSize) as _}
-    <InputField />
-{/each}
-<style>
+  import InputField from "./inputField.svelte";
+  export let word;
+  export let clue;
 
+</script>
+
+<div>
+  {#each word as letter}
+    <InputField correctLetter={letter}/>
+  {/each}
+</div>
+
+<style>
+    div{
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
 </style>
