@@ -6,7 +6,7 @@
   export let arrFalses = [false, false, false, false, false]
   export let wordTrue = false
   function checkIfLettersValid(letter,id){
-    if(letter == word[id]){
+    if(letter.toUpperCase() == word[id].toUpperCase()){
       arrFalses[id] = true
     }
     else{

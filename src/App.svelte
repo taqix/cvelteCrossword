@@ -23,6 +23,9 @@
       if (!arrOfNumbers.includes(random)) {
         arrOfNumbers.push(random);
       }
+      else{
+        i--;
+      }
     }
     return arrOfNumbers;
   }
