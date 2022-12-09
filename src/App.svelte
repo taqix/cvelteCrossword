@@ -41,7 +41,7 @@
   <div id="board" class="w-3/4 flex justify-center mt-10 flex-col">
     {#each mapOfWordsAndClues as objWordAndClue}
       <div class="flex flex-row content-center justify-center">
-        <div class="w-2/4"><RowField word={objWordAndClue.word} clue={objWordAndClue.clue}/></div>
+        <div class="w-2/4"><RowField word={objWordAndClue.word}/></div>
         <span class="w-2/4 flex items-center justify-center font-medium">{objWordAndClue.clue}</span>
     </div>
     {/each}
