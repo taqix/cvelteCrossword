@@ -5,12 +5,14 @@
   const urlApi = "https://porucznik-zag.github.io/word-api/words.json";
   export const xSize = 5;
   export let mapOfWordsAndClues = [];
+  export let wordResult;
   onMount(async function () {
     try {
       const response = await fetch(urlApi);
       const data = await response.json();
       const randomNumbersArr = getRandomNumbers(data);
       mapOfWordsAndClues = createBoard(randomNumbersArr, data);
+      wordResult = getRandomWordResult(data)
       console.log(mapOfWordsAndClues);
     } catch (e) {
       console.log(e);
@@ -29,6 +31,15 @@
     }
     return arrOfNumbers;
   }
+  function checkIfWordAndResultCanBeUsed(mapOfWordsAndClues, result,data){
+
+    mapOfWordsAndClues.forEach((obj)=>{
+      // console.log(obj.word);
+      for(let i=0;i<obj.word.length;i++){
+        console.log(obj.word.charAt(i));
+      }
+    })
+  }
 
   function createBoard(randomNumbersArr, data) {
     const arrOfObjWords = [];
@@ -37,6 +48,22 @@
       arrOfObjWords.push(obj)
     });
     return arrOfObjWords;
+  }
+
+
+  function getRandomWordResult(data) {
+    let obj
+    for (let i = 0; i < 1; i++) {
+      
+      const random = Math.floor(Math.random() * data.length);
+      obj = data[random];
+      checkIfWordAndResultCanBeUsed(mapOfWordsAndClues,obj,data)
+      if(mapOfWordsAndClues.includes(obj)){
+        i--
+      }
+      
+    }
+    return obj;
   }
 </script>
 
@@ -48,9 +75,20 @@
         <span class="w-2/4 flex items-center justify-center font-medium">{objWordAndClue.clue}</span>
     </div>
     {/each}
-
+    <div class="mt-5">{#each Array(5) as _}
+      <input type="text" disabled>
+    {/each}
+    </div>
   </div>
 </section>
 
 <style>
+  input[type="text"]{
+    width: 15%;
+    font-size: 2em;
+    height: 50px;
+    border: 1px solid green;
+    text-align: center;
+    text-transform: uppercase;
+  }
 </style>
