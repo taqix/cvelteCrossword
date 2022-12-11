@@ -14,7 +14,6 @@
     checkIfWordsValid();
   }
   function checkIfWordsValid() {
-    console.log(arrFalses);
     let counter = 0;
     arrFalses.forEach((f) => {
       if (f == true) counter++;

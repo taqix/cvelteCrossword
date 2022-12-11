@@ -1,5 +1,6 @@
 <script>
   import "./lib/Tailwind.css";
+  import { checkIfWordAndResultCanBeUsed } from './auth'
   import { onMount } from "svelte";
   import RowField from "./components/rowFields.svelte";
   const urlApi = "https://porucznik-zag.github.io/word-api/words.json";
@@ -31,15 +32,7 @@
     }
     return arrOfNumbers;
   }
-  function checkIfWordAndResultCanBeUsed(mapOfWordsAndClues, result,data){
-
-    mapOfWordsAndClues.forEach((obj)=>{
-      // console.log(obj.word);
-      for(let i=0;i<obj.word.length;i++){
-        console.log(obj.word.charAt(i));
-      }
-    })
-  }
+  
 
   function createBoard(randomNumbersArr, data) {
     const arrOfObjWords = [];
@@ -53,17 +46,14 @@
 
   function getRandomWordResult(data) {
     let obj
+    let checkedResult
     for (let i = 0; i < 1; i++) {
       
       const random = Math.floor(Math.random() * data.length);
       obj = data[random];
-      checkIfWordAndResultCanBeUsed(mapOfWordsAndClues,obj,data)
-      if(mapOfWordsAndClues.includes(obj)){
-        i--
-      }
-      
+      checkedResult = checkIfWordAndResultCanBeUsed(mapOfWordsAndClues,obj.word,data)
     }
-    return obj;
+    return checkedResult;
   }
 </script>
 
