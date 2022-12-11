@@ -1,9 +1,11 @@
 <script>
   import InputField from "./inputField.svelte";
+  import { writableArrayOfIsWin } from "../stores/store"
   export let word;
   export let arrFalses = [false, false, false, false, false];
   export let indexOfRow;
   export let wordTrue = false;
+  $: if(wordTrue){$writableArrayOfIsWin[indexOfRow] = true}
   function checkIfLettersValid(letter, id) {
     const idToDoc = id.slice(-1);
     if (letter.toUpperCase() == word[idToDoc].toUpperCase()) {
