@@ -3,20 +3,33 @@
   import { checkIfWordAndResultCanBeUsed } from "./auth";
   import { onMount } from "svelte";
   import RowField from "./components/rowFields.svelte";
-  import { writableArrayOfIsWin } from "./stores/store"
+  import { writableArrayOfIsWin, arrayOfIdFounds } from "./stores/store";
+  import { Confetti } from "svelte-confetti";
+  import { getNumbersFieldsWithLetterOfResult } from "./idFields";
+  export let wordResultToArr = [];
   const urlApi = "https://porucznik-zag.github.io/word-api/words.json";
   export const xSize = 5;
   export let mapOfWordsAndClues = [];
   export let wordResult;
-  const allEqual = arr => arr.every(val => val === arr[0]);
+  export let arrOfNumbersFieldWithLetterOfResult = [];
+  const allEqual = (arr) => arr.every((val) => val === arr[0]);
+  $: console.log($arrayOfIdFounds);
   onMount(async function () {
     try {
       const response = await fetch(urlApi);
       const data = await response.json();
       const randomNumbersArr = getRandomNumbers(data);
       mapOfWordsAndClues = createBoard(randomNumbersArr, data);
+      console.log("test");
       wordResult = getRandomWordResult(data);
-      console.log(mapOfWordsAndClues);
+      wordResultToArr = [...wordResult]
+      console.log(wordResult,wordResultToArr);
+      arrOfNumbersFieldWithLetterOfResult = getNumbersFieldsWithLetterOfResult(
+        mapOfWordsAndClues,
+        wordResult
+      );
+      $arrayOfIdFounds = arrOfNumbersFieldWithLetterOfResult;
+      console.log(mapOfWordsAndClues, arrOfNumbersFieldWithLetterOfResult);
     } catch (e) {
       console.log(e);
     }
@@ -46,15 +59,16 @@
   function getRandomWordResult(data) {
     let obj;
     let checkedResult;
-    for (let i = 0; i < 1; i++) {
-      const random = Math.floor(Math.random() * data.length);
-      obj = data[random];
-      checkedResult = checkIfWordAndResultCanBeUsed(
-        mapOfWordsAndClues,
-        obj.word,
-        data
-      );
-    }
+
+    const random = Math.floor(Math.random() * data.length);
+    obj = data[random];
+    checkedResult = checkIfWordAndResultCanBeUsed(
+      mapOfWordsAndClues,
+      obj.word,
+      data
+    );
+    console.log(checkedResult);
+
     return checkedResult;
   }
 </script>
@@ -64,7 +78,11 @@
     {#each mapOfWordsAndClues as objWordAndClue, index}
       <div class="flex flex-row content-center justify-center">
         <div class="w-2/4">
-          <RowField word={objWordAndClue.word} indexOfRow={String(index)} />
+          <RowField
+            word={objWordAndClue.word}
+            indexOfRow={String(index)}
+            {arrOfNumbersFieldWithLetterOfResult}
+          />
         </div>
         <span class="w-2/4 flex items-center justify-center font-medium"
           >{objWordAndClue.clue}</span
@@ -72,17 +90,25 @@
       </div>
     {/each}
     <div class="mt-5">
-      {#each Array(5) as _}
-        <input type="text" disabled />
+      {#each [...wordResultToArr] as lett,index}
+        {#if $arrayOfIdFounds[index].isWrote}
+        <input type="text" disabled id={"input"+index} value={$arrayOfIdFounds[index].letter}/>
+        {:else}
+        <input type="text" disabled id={"input"+index}/>
+        {/if}
+        
       {/each}
     </div>
     <div class="mt-5">
-      {#if allEqual($writableArrayOfIsWin)}
-        {#if $writableArrayOfIsWin[0]!=false}
-          <div>Winek</div>
-        {/if}
-        
+      {#if allEqual($writableArrayOfIsWin) && $writableArrayOfIsWin[0] != false}
+        <div>Winek</div>
+        <Confetti />
       {/if}
+    </div>
+    <div>
+      {#each $arrayOfIdFounds as ob}
+        {ob.isWrote}
+      {/each}
     </div>
   </div>
 </section>

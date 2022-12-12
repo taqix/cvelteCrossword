@@ -1,11 +1,18 @@
 <script>
-  import InputField from "./inputField.svelte";
-  import { writableArrayOfIsWin } from "../stores/store"
+  import { writableArrayOfIsWin, arrayOfIdFounds } from "../stores/store";
   export let word;
   export let arrFalses = [false, false, false, false, false];
   export let indexOfRow;
   export let wordTrue = false;
-  $: if(wordTrue){$writableArrayOfIsWin[indexOfRow] = true}
+  export let arrOfNumbersFieldWithLetterOfResult;
+  export let arrayOfId = [];
+  $: if (wordTrue) {
+    $writableArrayOfIsWin[indexOfRow] = true;
+  }
+  $arrayOfIdFounds.forEach((obj) => {
+    arrayOfId.push(obj.idOfField);
+    console.log(arrayOfId);
+  });
   function checkIfLettersValid(letter, id) {
     const idToDoc = id.slice(-1);
     if (letter.toUpperCase() == word[idToDoc].toUpperCase()) {
@@ -37,7 +44,7 @@
     console.log(e.keyCode);
     console.log(wordTrue);
     if ((e.keyCode >= 65 && e.keyCode <= 90) || e.keyCode == 39) {
-      if(e.target.id.slice(0,1)==4 && e.target.id.slice(-1) == 4){
+      if (e.target.id.slice(0, 1) == 4 && e.target.id.slice(-1) == 4) {
         return;
       }
       if ((e.keyCode === 13 && e.target.id.slice(-1) == 4) || wordTrue) {
@@ -45,7 +52,7 @@
         document.getElementById(startId + "0").focus();
         return;
       }
-      
+
       if (e.target.id.slice(-1) == 4) {
         const startId = e.target.id.slice(0, 1);
         document.getElementById(startId + "0").focus();
@@ -79,18 +86,38 @@
       return;
     }
   }
+  function changingFocusAndGiveInfoToStore(e,id){
+    changingFocus(e)
+    const idToChangeStore = arrayOfId.indexOf(id);
+    $arrayOfIdFounds[idToChangeStore].isWrote = true
+    $arrayOfIdFounds[idToChangeStore].letter = e.target.value
+
+    console.log($arrayOfIdFounds);
+  }
 </script>
 
 <div>
   {#each word as letter, index}
-    <input
-      type="text"
-      maxlength="1"
-      disabled={wordTrue}
-      id={indexOfRow + String(index)}
-      class={wordTrue ? "greened" : ""}
-      on:keyup|preventDefault={(e) => changingFocus(e)}
-    />
+    {#if arrayOfId.includes(indexOfRow + String(index))}
+      <input
+        type="text"
+        maxlength="1"
+        disabled={wordTrue}
+        id={indexOfRow + String(index)}
+        class={wordTrue ? "greened" : ""}
+        on:keyup|preventDefault={(e) => changingFocusAndGiveInfoToStore(e,(indexOfRow + String(index)))}
+      />
+    {:else}
+      <input
+        type="text"
+        maxlength="1"
+        disabled={wordTrue}
+        id={indexOfRow + String(index)}
+        class={wordTrue ? "greened" : ""}
+        on:keyup|preventDefault={(e) => changingFocus(e)}
+      />
+    {/if}
+
     <!-- <InputField correctLetter={letter} {clue} on:change={checkIfLettersValid}/> -->
   {/each}
 </div>
