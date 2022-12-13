@@ -1,5 +1,5 @@
 export function getNumbersFieldsWithLetterOfResult(arrOfWords, result){
-    console.log(result);
+    
     let arrayOfFounds = []
     let arrOfId = []
     for(let i = 0; i < 5; i++){
@@ -16,17 +16,30 @@ export function getNumbersFieldsWithLetterOfResult(arrOfWords, result){
                         arrOfId.push(id)
                     }
                     
-                    // console.log(arrayOfFounds)
+                    
                 }
                 
             }
-            // if(obj.word[index]===result[i]){
-            //     console.log(obj.word[index],result[i],index,i,obj.word,result);
-            // }
             
-            // console.log(index,i);
+            
         }
-        // console.log(obj.word,index,result);
+    
     })
     return arrayOfFounds
+}
+export function drawIndexShowed(arrayOfIdFounds){
+    let arrOfId = [];
+    for(let i=0;i<3;i++){
+        const random1 = Math.floor(Math.random() * 4)
+        const random2 = Math.floor(Math.random() * 4)
+        if(arrayOfIdFounds.includes(random1 + String(random2)) || arrOfId.includes(random1 + String(random2)))
+        {
+            i--
+        }
+        else{
+            arrOfId.push(random1 + String(random2))
+        }
+        
+    }
+    return arrOfId;
 }

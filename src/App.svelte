@@ -5,35 +5,48 @@
   import RowField from "./components/rowFields.svelte";
   import { writableArrayOfIsWin, arrayOfIdFounds } from "./stores/store";
   import { Confetti } from "svelte-confetti";
-  import { getNumbersFieldsWithLetterOfResult } from "./idFields";
+  import {
+    getNumbersFieldsWithLetterOfResult,
+    drawIndexShowed,
+  } from "./idFields";
   export let wordResultToArr = [];
   const urlApi = "https://porucznik-zag.github.io/word-api/words.json";
   export const xSize = 5;
   export let mapOfWordsAndClues = [];
   export let wordResult;
   export let arrOfNumbersFieldWithLetterOfResult = [];
+  export let startTime;
+  export let arrayOfId = [];
+  export let arrOfIdShowedOnMount = [];
+  export let endGameClose = false;
   const allEqual = (arr) => arr.every((val) => val === arr[0]);
-  $: console.log($arrayOfIdFounds);
+
   onMount(async function () {
     try {
       const response = await fetch(urlApi);
       const data = await response.json();
       const randomNumbersArr = getRandomNumbers(data);
       mapOfWordsAndClues = createBoard(randomNumbersArr, data);
-      console.log("test");
       wordResult = getRandomWordResult(data);
-      wordResultToArr = [...wordResult]
-      console.log(wordResult,wordResultToArr);
+      wordResultToArr = [...wordResult];
       arrOfNumbersFieldWithLetterOfResult = getNumbersFieldsWithLetterOfResult(
         mapOfWordsAndClues,
         wordResult
       );
       $arrayOfIdFounds = arrOfNumbersFieldWithLetterOfResult;
-      console.log(mapOfWordsAndClues, arrOfNumbersFieldWithLetterOfResult);
+      arrOfNumbersFieldWithLetterOfResult.forEach((obj) => {
+        arrayOfId.push(obj.idOfField);
+      });
+      startTime = Date.now();
+      arrOfIdShowedOnMount = drawIndexShowed(arrayOfId);
+      console.log(mapOfWordsAndClues);
     } catch (e) {
       console.log(e);
     }
   });
+  function toggle() {
+		endGameClose = !endGameClose;
+	}
   function getRandomNumbers(data) {
     const arrOfNumbers = [];
     for (let i = 0; i < 5; i++) {
@@ -67,59 +80,91 @@
       obj.word,
       data
     );
-    console.log(checkedResult);
 
     return checkedResult;
   }
 </script>
 
-<section class="w-full flex justify-center">
-  <div id="board" class="w-3/4 flex justify-center mt-10 flex-col">
+<section class="w-screen grid grid-cols-1 place-content-center">
+  <div id="board" class="w-3/4 grid grid-cols-1 place-self-center gap-y-1 mt-3">
     {#each mapOfWordsAndClues as objWordAndClue, index}
-      <div class="flex flex-row content-center justify-center">
-        <div class="w-2/4">
+      <div class="flex justify-center">
+        <div class="w-2/4 flex ">
           <RowField
             word={objWordAndClue.word}
             indexOfRow={String(index)}
             {arrOfNumbersFieldWithLetterOfResult}
+            {arrOfIdShowedOnMount}
           />
         </div>
-        <span class="w-2/4 flex items-center justify-center font-medium"
+        <span
+          class="w-1/4 flex items-center content-center justify-center font-medium"
           >{objWordAndClue.clue}</span
         >
       </div>
     {/each}
-    <div class="mt-5">
-      {#each [...wordResultToArr] as lett,index}
+    <div class="mt-5 flex justify-center content-center gap-x-1">
+      {#each [...wordResultToArr] as lett, index}
         {#if $arrayOfIdFounds[index].isWrote}
-        <input type="text" disabled id={"input"+index} value={$arrayOfIdFounds[index].letter}/>
+          <label for={"input" + index}>{index + 1}</label>
+          <input
+            type="text"
+            disabled
+            id={"input" + index}
+            class={endGameClose ? "greened" : ""}
+            value={$arrayOfIdFounds[index].letter}
+          />
         {:else}
-        <input type="text" disabled id={"input"+index}/>
+          <label for={"input" + index}>{index + 1}</label>
+          <input type="text" disabled id={"input" + index} class={endGameClose ? "greened" : ""} />
         {/if}
-        
-      {/each}
-    </div>
-    <div class="mt-5">
-      {#if allEqual($writableArrayOfIsWin) && $writableArrayOfIsWin[0] != false}
-        <div>Winek</div>
-        <Confetti />
-      {/if}
-    </div>
-    <div>
-      {#each $arrayOfIdFounds as ob}
-        {ob.isWrote}
       {/each}
     </div>
   </div>
 </section>
+{#if allEqual($writableArrayOfIsWin) && $writableArrayOfIsWin[0] != false && !endGameClose}<div
+    class="h-screen w-screen flex content-center justify-center flex-col z-10 absolute top-0 bg-sky-500/70"
+  >
+    <div
+      class="w-fit h-fit self-center py-2.5 px-2.5 border-2 border-sky-500 rounded-lg "
+    >
+      <div
+        class="text-center  subpixel-antialiased font-sans text-2xl font-medium tracking-normal"
+      >
+        Wygrana
+      </div>
+      <div
+        class="text-center  subpixel-antialiased font-sans text-2xl font-medium tracking-normal"
+      >
+        Czas: {(Date.now() - startTime) / 1000}s
+      </div>
+      <button class="text-center subpixel-antialiased font-sans text-2xl font-medium justify-self-center tracking-normal w-full border rounded-xl border-red-700  mt-3 transition  ease-in hover:scale-110 hover:bg-red-700 hover:text-white" on:click={toggle}>Zamknij</button>
+      <Confetti size={10} infinite={true} x={[-3,3]} y={[-1,1.5]}/>
+      
+    </div>
+    
+  </div>
+{/if}
 
 <style>
   input[type="text"] {
     width: 15%;
     font-size: 2em;
     height: 50px;
-    border: 1px solid green;
+    border: 1px solid #0284c7;
     text-align: center;
     text-transform: uppercase;
+    border-radius: 0.75rem;
+  }
+  label {
+    width: 15px;
+    z-index: 10;
+    text-align: center;
+  }
+  div label + input {
+    margin-left: -20px;
+  }
+  .greened {
+    background-color:rgb(3, 105, 161,0.7)
   }
 </style>

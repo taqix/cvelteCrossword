@@ -4,7 +4,6 @@ export function checkIfWordAndResultCanBeUsed(
   data
 ) {
   let objOfWordAndClue;
-  console.log(result);
   while (true) {
     let arrayOfLetters = [false, false, false, false, false];
     mapOfWordsAndClues.forEach((obj) => {
@@ -27,14 +26,13 @@ export function checkIfWordAndResultCanBeUsed(
     if (counter === 5) {
       let isInMap = false;
       mapOfWordsAndClues.forEach((obj) => {
-        console.log(result, obj.word);
+        
         if (result === obj.word) {
-          console.log(result, obj.word);
+          
           isInMap = true;
         }
       });
-      console.log(isInMap);
-      console.log("cos", result);
+      
       break;
     } else if (counter !== 5) {
       const random = Math.floor(Math.random() * data.length);
