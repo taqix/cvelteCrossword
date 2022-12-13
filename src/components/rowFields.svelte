@@ -88,6 +88,7 @@
   }
   function changingFocusAndGiveInfoToStore(e,id){
     changingFocus(e)
+    //TODO trzeba tutaj dodać sprawdzanie czy nie ma podwójnego pola zeby wysyłać jedną literę w dwa miejsca
     const idToChangeStore = arrayOfId.indexOf(id);
     $arrayOfIdFounds[idToChangeStore].isWrote = true
     $arrayOfIdFounds[idToChangeStore].letter = e.target.value

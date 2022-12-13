@@ -1,6 +1,7 @@
 export function getNumbersFieldsWithLetterOfResult(arrOfWords, result){
     console.log(result);
     let arrayOfFounds = []
+    let arrOfId = []
     for(let i = 0; i < 5; i++){
         arrayOfFounds.push({idOfField: "", isWrote: false,isFound: false,letter:""})
     }
@@ -8,11 +9,11 @@ export function getNumbersFieldsWithLetterOfResult(arrOfWords, result){
         for(let i=0;i<arrOfWords.length;i++){
             for(let j=0;j<result.length;j++){
                 if(obj.word[i] === result[j]){
-                    if(arrayOfFounds[j].isFound === false){
+                    const id = String(index)+String(i)
+                    if(arrayOfFounds[j].isFound === false && !arrOfId.includes(id)){
                         arrayOfFounds[j].isFound = true
-                        const id = String(index)+String(i)
                         arrayOfFounds[j].idOfField = id
-                        
+                        arrOfId.push(id)
                     }
                     
                     // console.log(arrayOfFounds)
